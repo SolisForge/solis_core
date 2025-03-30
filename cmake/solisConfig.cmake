@@ -1,0 +1,1 @@
+add_library(solis::core ALIAS core)
