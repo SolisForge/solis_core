@@ -61,7 +61,7 @@ public:
     auto _d = get_dimension(dim);
     if (_d == nullptr)
       return nullptr;
-    return _d->get_chunk(CoordinateWrapper(coord));
+    return _d->get_chunk(coord);
   }
 
   /**

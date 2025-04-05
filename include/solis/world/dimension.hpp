@@ -67,7 +67,7 @@ public:
   template <typename C>
   inline Region::SharedPtr
   get_region(const std::shared_ptr<LocalizedStructure<C>> &obj) const {
-    return get_region(CoordinateWrapper<C>(obj->coord));
+    return get_region(obj->coord);
   }
 
   /**
@@ -78,10 +78,10 @@ public:
    * @return a pointer to the region, null if it does not exist
    */
   template <typename C>
-  inline Region::SharedPtr
-  get_region(const CoordinateWrapper<C> &coordinates) const {
-    return get_region(
-        CoordinateWrapper(cvtCoordinate<RegionCoordinate>(coordinates.coord)));
+  inline Region::SharedPtr get_region(const C &coordinates) const {
+    static_assert(!std::is_base_of<CoordinateInterface, C>::value,
+                  "This function should be called with coordinates");
+    return get_region(cvtCoordinate<RegionCoordinate>(coordinates));
   }
 
   /**
@@ -90,9 +90,7 @@ public:
    * @param coordinates the region coordinates
    * @return a pointer to the region, null if it does not exist
    */
-  template <>
-  Region::SharedPtr
-  get_region(const CoordinateWrapper<RegionCoordinate> &coordinate) const;
+  Region::SharedPtr get_region(const RegionCoordinate &coordinate) const;
 
   // --------------------------------------------------------------------------
 
@@ -107,7 +105,7 @@ public:
   template <typename C>
   inline Chunk::SharedPtr
   is_region_loaded(const std::shared_ptr<LocalizedStructure<C>> &obj) const {
-    return is_region_loaded(CoordinateWrapper(obj->coord));
+    return is_region_loaded(obj->coord);
   }
 
   /**
@@ -118,9 +116,8 @@ public:
    * @return true if the region is loaded, else otherwise
    */
   template <typename C>
-  inline bool is_region_loaded(const CoordinateWrapper<C> &coordinates) const {
-    return is_region_loaded(
-        CoordinateWrapper(cvtCoordinate<RegionCoordinate>(coordinates)));
+  inline bool is_region_loaded(const C &coordinates) const {
+    return is_region_loaded(cvtCoordinate<RegionCoordinate>(coordinates));
   }
 
   /**
@@ -130,9 +127,7 @@ public:
    * @param coordinates the coordinates of the region
    * @return true if the region is loaded, else otherwise
    */
-  template <>
-  bool is_region_loaded(
-      const CoordinateWrapper<RegionCoordinate> &coordinates) const;
+  bool is_region_loaded(const RegionCoordinate &coordinates) const;
 
 protected:
   /*
@@ -149,7 +144,7 @@ public:
   template <typename C>
   inline Chunk::SharedPtr
   get_chunk(const std::shared_ptr<LocalizedStructure<C>> &obj) const {
-    return get_chunk(CoordinateWrapper(obj->coord));
+    return get_chunk(obj->coord);
   }
 
   /**
@@ -159,10 +154,10 @@ public:
    * @return a pointer to the chunk, nullptr if it does not exist
    */
   template <typename C>
-  inline Chunk::SharedPtr
-  get_chunk(const CoordinateWrapper<C> &coordinates) const {
-    return get_chunk(
-        CoordinateWrapper(cvtCoordinate<ChunkCoordinate>(coordinates)));
+  inline Chunk::SharedPtr get_chunk(const C &coordinates) const {
+    static_assert(!std::is_base_of<CoordinateInterface, C>::value,
+                  "This function should be called with coordinates");
+    return get_chunk(cvtCoordinate<ChunkCoordinate>(coordinates));
   }
 
   /**
@@ -170,9 +165,7 @@ public:
    * @param coordinates the chunk coordinates
    * @return a pointer to the chunk, nullptr if it does not exist
    */
-  template <>
-  Chunk::SharedPtr
-  get_chunk(const CoordinateWrapper<ChunkCoordinate> &coordinates) const;
+  Chunk::SharedPtr get_chunk(const ChunkCoordinate &coordinates) const;
 
   // --------------------------------------------------------------------------
 
@@ -187,7 +180,7 @@ public:
   template <typename C>
   inline bool
   is_chunk_loaded(const std::shared_ptr<LocalizedStructure<C>> &obj) const {
-    return is_chunk_loaded(CoordinateWrapper<C>(obj->coord));
+    return is_chunk_loaded(obj->coord);
   }
 
   /**
@@ -198,9 +191,8 @@ public:
    * @return true if the chunk is loaded, else otherwise
    */
   template <typename C>
-  inline bool is_chunk_loaded(const CoordinateWrapper<C> &coordinates) const {
-    return is_chunk_loaded(
-        CoordinateWrapper(cvtCoordinate<ChunkCoordinate>(coordinates.coord)));
+  inline bool is_chunk_loaded(const C &coordinates) const {
+    return is_chunk_loaded(cvtCoordinate<ChunkCoordinate>(coordinates));
   }
 
   /**
@@ -210,9 +202,7 @@ public:
    * @param coordinates the coordinates of the chunk
    * @return true if the chunk is loaded, else otherwise
    */
-  template <>
-  bool
-  is_chunk_loaded(const CoordinateWrapper<ChunkCoordinate> &coordinates) const;
+  bool is_chunk_loaded(const ChunkCoordinate &coordinates) const;
 
   // --------------------------------------------------------------------------
 

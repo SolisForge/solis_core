@@ -28,15 +28,16 @@ namespace solis::world {
  * needed.
  */
 struct CoordinateInterface {};
-template <typename C> struct CoordinateWrapper {
-  C coord;
+// template <typename C> struct _Wrapper {
+//   C coord;
 
-  constexpr CoordinateWrapper(const C &c) : coord(c) {
-    static_assert(!std::is_base_of<CoordinateInterface, C>::value,
-                  "Coordinate wrapper type should be of CoordinateInterface.");
-  }
-  constexpr operator C &() { return coord; }
-};
+//   constexpr _Wrapper(const C &c) : coord(c) {
+//     static_assert(!std::is_base_of<CoordinateInterface, C>::value,
+//                   "Coordinate wrapper type should be of
+//                   CoordinateInterface.");
+//   }
+//   constexpr operator C &() { return coord; }
+// };
 /**
  * @brief Template coordinate type in 3D space.
  */
@@ -90,16 +91,16 @@ typedef Coordinate2D<RegionCoordinate_t> RegionCoordinate;
 template <typename Tout, typename Tin>
 inline constexpr Tout cvtCoordinate([[__maybe_unused__]] const Tin &c_in) {
   // Static assert to prevent using it without the proper methods
-  static_assert(!std::is_base_of<Tin, CoordinateInterface>::value,
+  static_assert(!std::is_base_of<CoordinateInterface, Tin>::value,
                 "The coordinate conversion function should be called with a "
                 "CoordinateInterface type");
-  static_assert(!std::is_base_of<Tout, CoordinateInterface>::value,
+  static_assert(!std::is_base_of<CoordinateInterface, Tout>::value,
                 "The coordinate conversion function should be called with a "
                 "CoordinateInterface type");
   // Unimplemented methods error raising
-  static_assert(std::is_base_of<Tin, CoordinateInterface>::value,
+  static_assert(std::is_base_of<CoordinateInterface, Tin>::value,
                 "Unimplemented coordinate conversion function");
-  static_assert(std::is_base_of<Tout, CoordinateInterface>::value,
+  static_assert(std::is_base_of<CoordinateInterface, Tout>::value,
                 "Unimplemented coordinate conversion function");
 }
 

@@ -63,5 +63,7 @@ macro(solis_package)
       ${BUILD_CMAKE_DIR}/${PROJECT_NAME}Config.cmake
       INSTALL_DESTINATION ${INSTALL_CMAKE_DIR}/${PROJECT_NAME}Config.cmake
     )
+  else()
+    message("Could not find file ${CMAKE_CURRENT_LIST_DIR}/cmake/${PROJECT_NAME}Config.cmake")
   endif()
 endmacro()
