@@ -14,19 +14,8 @@ include("cmake/extras.cmake")
 # =============================================================================
 # Export core files
 # =============================================================================
-macro(define_lib t)
-  file(GLOB_RECURSE ${t}_src LIST_DIRECTORIES false "src/${t}/**.cpp")
-  add_library(${t} SHARED ${${t}_src})
-  target_include_directories(${t}
-    PUBLIC
-    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
-    "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/include>"
-  )
-endmacro()
+solis_library(utils DIRECTORY "src/utils")
+solis_library(resources DIRECTORY "src/resources" )
+solis_library(worlds DIRECTORY "src/worlds" DEPENDS utils resources)
 
-define_lib(utils)
-define_lib(resources)
-define_lib(worlds)
-target_link_libraries(worlds PRIVATE utils resources)
-
-export_config()
+solis_package(NAMESPACE solis::)

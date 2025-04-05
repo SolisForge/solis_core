@@ -1,2 +1,6 @@
-add_library(solis::utils ALIAS utils)
-add_library(solis::worlds ALIAS worlds)
+@PACKAGE_INIT@
+
+set(SOLIS_TARGETS "${CMAKE_CURRENT_LIST_DIR}/solisTargets.cmake")
+if (EXISTS ${SOLIS_TARGETS})
+  include(${SOLIS_TARGETS})
+endif()
