@@ -6,7 +6,7 @@
 
   This file contains flags definition and manipulation methods.
 
-  @author    Geoffrey Côte
+  @author    Meltwin
   @date      30/03/25
   @version   0.0.1
   @copyright Meltwin - 2025
