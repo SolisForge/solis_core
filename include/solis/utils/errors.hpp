@@ -21,23 +21,50 @@
 
 namespace solis {
 
-struct FileNotFoundError : public std::exception {
-  sconstchar MSG_FORMAT{"Unknown file \"{:s}\"!"};
-  FileNotFoundError(const char *filename)
-      : error_msg(fmt::format(MSG_FORMAT, filename)) {}
+/**
+ * @brief Base error for the solis stack.
+ * It takes a string as input to allow for fmt::format usage.
+ */
+struct SolisError : std::exception {
+  SolisError(std::string in) : error_msg(in) {}
+  SolisError(const char *in) : error_msg(std::string(in)) {}
   const char *what() const noexcept { return error_msg.c_str(); }
 
 protected:
   const std::string error_msg;
 };
 
-struct ZLibError : public std::exception {
+// ----------------------------------------------------------------------------
+
+/**
+ * @brief Error to be raised if a file has not been found.
+ */
+struct FileNotFoundError : SolisError {
+  sconstchar MSG_FORMAT{"Unknown file \"{:s}\"!"};
+  FileNotFoundError(const char *filename)
+      : SolisError(fmt::format(MSG_FORMAT, filename)) {}
+};
+
+// ----------------------------------------------------------------------------
+
+/**
+ * @brief ZLIB processing error.
+ * This error is to be raised when an error arise with the zlib methods.
+ * It takes care of exporting the error integer code in a human readable
+ * message.
+ */
+struct ZLibError : SolisError {
   sconstchar MSG_FORMAT{"ZLib failed with code {:d} ({:s}: {:s})!"};
   ZLibError(int8_t err_code, const char *msg)
-      : error_msg(fmt::format(MSG_FORMAT, err_code, code2char(err_code), msg)) {
-  }
-  const char *what() const noexcept { return error_msg.c_str(); }
+      : SolisError(
+            fmt::format(MSG_FORMAT, err_code, code2char(err_code), msg)) {}
 
+  /**
+   * @brief Convert the ZLIB error code into a string.
+   *
+   * @param code the ZLIB error code
+   * @return a corresponding human-readable string
+   */
   static constexpr const char *code2char(int8_t code) {
     switch (code) {
     case Z_OK:
@@ -62,17 +89,26 @@ struct ZLibError : public std::exception {
       return "UNKNOWN";
     }
   }
-
-protected:
-  const std::string error_msg;
 };
 
-struct FileIOError : std::exception {
+// ----------------------------------------------------------------------------
+
+/**
+ * @brief File IO error.
+ * This error is to be raised by problem arise from fopen, fread, ...
+ * It automatically process the errno code to make it human readable.
+ */
+struct FileIOError : SolisError {
   sconstchar MSG_FORMAT{"File IO failed with code {:d} ({:s})!"};
-  FileIOError() : error_msg(fmt::format(MSG_FORMAT, errno, code2char(errno))) {}
+  FileIOError()
+      : SolisError(fmt::format(MSG_FORMAT, errno, code2char(errno))) {}
 
-  const char *what() const noexcept { return error_msg.c_str(); }
-
+  /**
+   * @brief Convert an errno error code into a user readable string.
+   *
+   * @param err the errno integer error
+   * @return a human-understandable error string
+   */
   static constexpr const char *code2char(int err) {
     switch (err) {
     case EACCES:
@@ -114,9 +150,6 @@ struct FileIOError : std::exception {
       return "UNKNOWN";
     }
   }
-
-protected:
-  const std::string error_msg;
 };
 
 } // namespace solis
