@@ -28,6 +28,27 @@ macro(solis_depend dep_name)
 endmacro()
 
 # =============================================================================
+# Interface target definition
+# 
+# Author: Meltwin
+# Since: 0.0.1
+# =============================================================================
+macro(solis_interface lib_name)
+  cmake_parse_arguments(ARG "" "NAMESPACE" "DEPENDS;INCLUDES" ${ARGN})
+
+  # Generate library
+  solis_namespace(OUT _ns TARGET ${lib_name} NAMESPACE ${ARG_NAMESPACE})
+  message(STATUS "+ Processing interface \"${_ns}::${lib_name}\"")
+  add_library(${lib_name} INTERFACE)
+  set_target_properties(${lib_name} PROPERTIES OUTPUT_NAME "${_ns}_${lib_name}")
+  add_library(${_ns}::${lib_name} ALIAS ${lib_name})
+  set_target_properties(${lib_name} PROPERTIES EXPORT_NAME ${_ns}::${lib_name})
+  solis_depends(${lib_name} DEPENDS ${ARG_DEPENDS})
+  solis_include(${lib_name} INCLUDES ${ARG_INCLUDES} INTERFACE)
+  solis_register(${lib_name} LIB)
+endmacro()
+
+# =============================================================================
 # Library target definition
 # 
 # Author: Meltwin
@@ -46,7 +67,7 @@ macro(solis_library lib_name)
     add_library(${_ns}::${lib_name} ALIAS ${lib_name})
     set_target_properties(${lib_name} PROPERTIES EXPORT_NAME ${_ns}::${lib_name})
     solis_depends(${lib_name} DEPENDS ${ARG_DEPENDS})
-    solis_include(${lib_name} INCLUDES ${ARG_INCLUDES} INCLUDES_RAW ${ARG_INCLUDES_RAW})
+    solis_include(${lib_name} INCLUDES "include" ${ARG_INCLUDES} INCLUDES_RAW ${ARG_INCLUDES_RAW})
     solis_register(${lib_name} LIB)
   else()
     message(WARNING "No sources found for library ${PROJECT_NAME}/${lib_name}")

@@ -79,26 +79,24 @@ endfunction()
 # Since 0.0.1
 # =============================================================================
 function(solis_include _target) 
-  cmake_parse_arguments(_FUNC_ARG "" "" "INCLUDES;INCLUDES_RAW" ${ARGN})
-  if (_FUNC_ARG_INCLUDES)
-    # Make parameters for target_include_directories function
-    set(include_dirs "")
-    foreach(id ${_FUNC_ARG_INCLUDES})
-      set(include_dirs "${include_dirs} $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${id}>  $<INSTALL_INTERFACE:${id}>")
-    endforeach()
-    foreach(id ${_FUNC_ARG_INCLUDES_RAW})
-      set(include_dirs "${include_dirs} ${id}")
-    endforeach()
-
-    # Include directory
-    target_include_directories(${_target} PUBLIC ${include_dirs}) 
+  cmake_parse_arguments(_FUNC_ARG "INTERFACE" "" "INCLUDES;INCLUDES_RAW" ${ARGN})
+  if (_FUNC_ARG_INTERFACE)
+    set(_FUNC_BUILD_ARGS "INTERFACE")
   else()
-    # Default fallback: include package include dir
-    target_include_directories(${_target} PUBLIC 
-      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>  
-      $<INSTALL_INTERFACE:include> 
-    )
+    set(_FUNC_BUILD_ARGS "PUBLIC")
   endif()
+
+  # Make parameters for target_include_directories function
+  set(include_dirs "")
+  foreach(id ${_FUNC_ARG_INCLUDES})
+    cmake_path(APPEND include_dirs "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${id}>$<INSTALL_INTERFACE:${id}>")
+  endforeach()
+  foreach(id ${_FUNC_ARG_INCLUDES_RAW})
+    cmake_path(APPEND include_dirs "${CMAKE_CURRENT_SOURCE_DIR}/${id}")
+  endforeach()
+
+  # Include directory
+  target_include_directories(${_target} ${_FUNC_BUILD_ARGS} ${include_dirs}) 
 endfunction()
 
 # =============================================================================
