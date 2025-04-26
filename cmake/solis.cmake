@@ -132,6 +132,7 @@ macro(solis_package)
   cmake_parse_arguments(ARG "" "CONFIG_FILE" "" ${ARGN})
 
   # Export targets
+  message(STATUS "Packaging  \"${PROJECT_NAME}\"")
   if (NOT "${${PROJECT_NAME}_MIXED_TARGETS}" STREQUAL "")
     solis_package_targets()
   endif()

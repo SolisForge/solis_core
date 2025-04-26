@@ -44,7 +44,7 @@ endfunction()
 # =============================================================================
 function(solis_package_cmake)
   cmake_parse_arguments(_FUNC_ARG "" "" "" ${ARGN})
-  message(STATUS "+ Exporting CMake files for package \"${PROJECT_NAME}\"")
+  message(STATUS "> Exporting CMake files for package \"${PROJECT_NAME}\"")
   install(
     FILES ${${PROJECT_NAME}_CMAKE_FILES}
     DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/share/${PROJECT_NAME}"
@@ -59,7 +59,7 @@ endfunction()
 # =============================================================================
 function(solis_package_config)
   cmake_parse_arguments(_FUNC_ARG "" "CONFIG_FILE" "" ${ARGN})
-  message(STATUS "+ Exporting config for package \"${PROJECT_NAME}\"")
+  message(STATUS "> Exporting config for package \"${PROJECT_NAME}\"")
 
   # Exporting package config file
   set(BUILD_SHARE_DIR "${PROJECT_BINARY_DIR}/share/${PROJECT_NAME}")
@@ -79,7 +79,7 @@ function(solis_package_config)
   # Add external dependencies
   # ---------------------------------------------------------------------------
   if (NOT "${${PROJECT_NAME}_EXTERNAL_DEPS}" STREQUAL "")
-    message(VERBOSE "  Exporting external dependencies")
+    message(VERBOSE "> Exporting external dependencies")
     file(APPEND ${config_gen} "
 # ------------------ ${PROJECT_NAME} Deps -------------------
 include(CMakeFindDependencyMacro)
@@ -93,7 +93,7 @@ include(CMakeFindDependencyMacro)
   # Export targets
   # ---------------------------------------------------------------------------
   if (NOT "${PROJECT_NAME}_MIXED_TARGETS" STREQUAL "") 
-  message(VERBOSE "  Exporting project targets")
+  message(VERBOSE "> Exporting project targets")
     file(APPEND ${config_gen} "
 # ----------------- ${PROJECT_NAME} Targets -----------------
 if (EXISTS \${CMAKE_CURRENT_LIST_DIR}/${PROJECT_NAME}Targets.cmake)
@@ -106,7 +106,7 @@ endif()
   # Add CMake imports
   # ---------------------------------------------------------------------------
   if (NOT "${${PROJECT_NAME}_CMAKE_FILES}" STREQUAL "")
-    message(VERBOSE "  Exporting CMake extras")
+    message(VERBOSE "> Exporting CMake extras")
     file(APPEND ${config_gen} "
 # ------------------ ${PROJECT_NAME} CMake ------------------
 macro(load_cmake _file)
@@ -124,7 +124,7 @@ endmacro()
   # If project has its own custom config file
   # ---------------------------------------------------------------------------
   if (NOT "${_FUNC_ARG_CONFIG_FILE}" STREQUAL "" AND EXISTS ${PROJECT_SOURCE_DIR}/${_FUNC_ARG_CONFIG_FILE})
-    message(VERBOSE "  Exporting custom config file")
+    message(VERBOSE "> Exporting custom config file")
     configure_package_config_file(
       ${PROJECT_SOURCE_DIR}/${_FUNC_ARG_CONFIG_FILE}
       ${BUILD_CMAKE_DIR}/${_FUNC_ARG_CONFIG_FILE}
@@ -145,7 +145,7 @@ endif()
   # ---------------------------------------------------------------------------
   # Exporting config file
   # ---------------------------------------------------------------------------
-  message(VERBOSE "  Configuring config file")
+  message(VERBOSE "> Configuring config file")
   configure_package_config_file(
     ${config_gen}
     ${BUILD_CMAKE_DIR}/${PROJECT_NAME}Config.cmake
