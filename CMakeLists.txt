@@ -18,14 +18,14 @@ solis_depend(fmt)
 # =============================================================================
 # Export core files
 # =============================================================================
-solis_library(utils DIRECTORY "src/utils" DEPENDS ZLIB::ZLIB fmt::fmt)
+solis_library(utils DIRECTORY "src/utils" DEPENDS ZLIB::ZLIB fmt::fmt  INCLUDES "include")
 if ("${CMAKE_CXX_BYTE_ORDER}" STREQUAL "BIG_ENDIAN")
   target_compile_definitions(utils PUBLIC _CMAKE_ENDIANNESS=1)
 else()
   target_compile_definitions(utils PUBLIC _CMAKE_ENDIANNESS=0)
 endif()
-solis_library(resources DIRECTORY "src/resources" )
-solis_library(worlds DIRECTORY "src/worlds" DEPENDS utils resources)
+solis_library(resources DIRECTORY "src/resources" INCLUDES "include")
+solis_library(worlds DIRECTORY "src/worlds" DEPENDS utils resources  INCLUDES "include")
 solis_cmake(FILES
   cmake/arguments.cmake
   cmake/package.cmake
