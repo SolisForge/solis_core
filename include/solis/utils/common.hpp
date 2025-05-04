@@ -15,8 +15,9 @@
 */
 
 namespace solis {
-
-#define sconstchar static constexpr const char *
+#define constchar constexpr const char *
+#define sconstchar static constchar
+#define sconstval static constexpr
 
 } // namespace solis
 
