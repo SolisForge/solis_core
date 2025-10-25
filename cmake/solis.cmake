@@ -9,8 +9,7 @@
 #  Copyright Meltwin - 2025
 #             Distributed under the MIT Licence
 #  =============================================================================
-include(GNUInstallDirs)
-include(CMakePackageConfigHelpers)
+
 include(GenerateExportHeader)
 include("${CMAKE_CURRENT_LIST_DIR}/arguments.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/package.cmake")
@@ -94,51 +93,4 @@ macro(solis_program exe_name)
   else()
     message("No sources found for program ${PROJECT_NAME}/${exe_name}")
   endif()
-endmacro()
-
-# =============================================================================
-# CMake target definition
-# 
-# Author: Meltwin
-# Since: 0.0.1
-# =============================================================================
-macro(solis_cmake)
-  cmake_parse_arguments(ARG "" "" "FILES;DIRECTORIES" ${ARGN})
-
-  # Register from files
-  message(STATUS "+ Processing cmake files")
-  foreach(f ${ARG_FILES})
-    solis_register(${f} CMAKE)
-  endforeach()
-
-  # Register from dir
-  foreach(d ${ARG_DIRECTORIES})
-    file(GLOB_RECURSE d_cmake LIST_DIRECTORIES FALSE "${PROJECT_SOURCE_DIR}/${d}/**.cmake")
-    foreach(f ${d_cmake})
-      solis_register(${f} CMAKE)
-    endforeach()
-  endforeach()
-endmacro()
-
-# =============================================================================
-# Install and export all found targets.
-# 
-# Author: Meltwin
-# Since: 0.0.1
-# =============================================================================
-macro(solis_package)
-  cmake_parse_arguments(ARG "" "CONFIG_FILE" "" ${ARGN})
-
-  # Export targets
-  message(STATUS "Packaging  \"${PROJECT_NAME}\"")
-  if (NOT "${${PROJECT_NAME}_MIXED_TARGETS}" STREQUAL "")
-    solis_package_targets()
-  endif()
-
-  # Export cmake files
-  if (NOT "${${PROJECT_NAME}_CMAKE_FILES}" STREQUAL "")
-    solis_package_cmake()
-  endif()
-
-  solis_package_config(CONFIG_FILE ${ARG_CONFIG_FILE})
 endmacro()
